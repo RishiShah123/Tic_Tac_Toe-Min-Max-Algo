@@ -1,0 +1,93 @@
+board = ["."] * 9
+wining_comb = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]]
+game = True
+
+
+def new_board():
+    print (board[0] + "|" + board[1] + "|" + board[2])
+    print (board[3] + "|" + board[4] + "|" + board[5])
+    print (board[6] + "|" + board[7] + "|" + board[8])
+
+new_board()
+def wining(comb):
+    global game 
+    for l in range(len(wining_comb)):
+        a = wining_comb[l][0]
+        f = wining_comb[l][1]
+        v = wining_comb[l][2]
+        if comb[a] == comb[f] == comb[v] == "O" or "x" == comb[a] == comb[f] == comb[v]: 
+            if comb[a] == "x":
+                return 1
+            else:
+                return -1
+        if not "." in comb:
+            return 0
+            
+            
+            
+def minmax(board, ismax):
+    if wining(board) != None:
+        h = wining(board)
+        return h
+
+        
+    else:
+        if ismax == True:
+            bestscore = float('-inf')
+            for k in range(len(board)):
+                if board[k] == ".":
+                    board[k] = "x"
+                    score = minmax(board,False)
+                    board[k] = '.'
+                    bestscore = max(bestscore, score)
+                    
+            return bestscore 
+        else:
+            bestscore = float('inf')
+            for k in range(len(board)):
+                if board[k] == ".":
+                    board[k] = "O"
+                    score = minmax(board,True)
+                    board[k] = '.'
+                    bestscore = min(bestscore,score)
+                 
+            return bestscore
+                    
+                    
+
+def player1(board) :
+    bestscore = float('-inf')
+    bestmove = 0
+    for k in range(len(board)):
+        if board[k] == ".":
+            board[k] = "x"
+            score = minmax(board, False)
+            board[k] = "."
+            if score > bestscore:
+                bestscore = score
+                bestmove = k
+    board[bestmove] = "x"
+    new_board()
+            
+    
+def player2(board):
+    while True:
+        number = int(input("please give a number for position?"))
+        if board[number-1] != ".":
+            pass
+        else:
+            board[number-1] = "O"
+            break
+    new_board()
+
+while wining(board) is None:
+    player1(board)
+    if wining(board) is not None:
+        if wining(board) == 1:
+            print("player x wins")
+        elif wining(board) == -1:
+            print("player o wins")
+        else:
+            print("it is a draw")
+        break
+    player2(board)
